@@ -21,7 +21,7 @@ def db_connect():
 # Returns *all* menus on for a given date
 # Date is of the format <MM><DD> where MM=month
 # and DD=day. Year is assumed to be 2013
-@app.route("/menu/<date>/<meal>", methods=['GET'])
+@app.route("/menu/<date>", methods=['GET'])
 def get_menus_on_day(date):
     year = '2013'
     month = date[0:2]
@@ -29,7 +29,7 @@ def get_menus_on_day(date):
     full_date = "%s-%s-%s" % (year, month, day)
     menus = get_menu_collection()
     regex = re.compile(full_date,re.IGNORECASE)
-    data = menus.find({'day': regex})
+    data = menus.find({'day': regex}, {'_id': 0})
 
     # Produce JSON
     dict = {'status_code' : 200}
@@ -65,7 +65,7 @@ def get_menu_for_meal(date, meal):
     else:
         return error("invalid meal type. Must be one of {brunch, lunch, dinner}")
 
-    data = menus.find({'day': date_regex, 'meal_type':meal})
+    data = menus.find({'day': date_regex, 'meal_type':meal}, {'_id': 0})
 
 
     # Produce JSON
@@ -125,5 +125,5 @@ def hello():
     return "Hello World2"
 
 if __name__ == "__main__":
-    #app.run()
-    test()
+    app.run()
+    #test()
