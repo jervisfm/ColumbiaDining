@@ -94,7 +94,7 @@ def get_menu_for_meal(date, meal):
         return error("invalid meal type. Must be one of {brunch, lunch, dinner}")
 
     meal_regex = re.compile(meal_key,re.IGNORECASE)
-    
+
 
     data = menus.find({'day': date_regex, 'meal_type':meal_regex}, {'_id': 0})
 
