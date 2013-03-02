@@ -15,12 +15,18 @@ def read_entire_file(file_path):
         line = f.readline()
     return result
 
+def get_json_data(file_path):
+    json_text = read_entire_file(file_path)
+    j = json.loads(json_text)
+    return j['data']
 
 def test():
     file_path = ('dining.json')
-    json_text = read_entire_file(file_path)
-    j = json.loads(json_text)
-    print j
+    data = get_json_data(file_path)
+    for item in data:
+        print item
+    print len(data)
+
 
 
 @app.route("/")
