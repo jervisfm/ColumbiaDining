@@ -40,6 +40,25 @@ def get_menus_on_day(date):
     return json.dumps(dict)
 
 """
+Searches the menus and returns the days which have the
+given meal
+"""
+@app.route("/menu/search/<food>", methods=['GET'])
+def search(food):
+    menus = get_menu_collection()
+    regex = re.compile(food,re.IGNORECASE)
+    data = menus.find({'menu': regex}, {'_id': 0})
+
+    # Produce JSON
+    dict = {'status_code' : 200}
+    my_list = []
+    for item in data:
+        my_list.append(item)
+    dict['data'] = my_list
+    return json.dumps(dict)
+
+
+"""
 Get Menu on given day and for given meal
 <date> is of format <MM><DD> with MM=month, <DD>=day
 
@@ -59,13 +78,13 @@ def get_menu_for_meal(date, meal):
     if meal == 'brunch':
         meal = 'BN'
     elif meal == 'lunch':
-        meal = 'LN'
+        meal = 'LU'
     elif meal == 'dinner':
         meal = 'DN'
     else:
         return error("invalid meal type. Must be one of {brunch, lunch, dinner}")
 
-    data = menus.find({'day': date_regex, 'meal_type':meal}, {'_id': 0})
+    data = menus.find({'day': date_regex}, {'_id': 0})
 
 
     # Produce JSON
@@ -73,6 +92,7 @@ def get_menu_for_meal(date, meal):
     my_list = []
     for item in data:
         my_list.append(item)
+    dict['size'] = data.count()
     dict['data'] = my_list
     return json.dumps(dict)
 
@@ -93,11 +113,12 @@ def get_menu_collection():
 def test_search():
     conn = db_connect()
     menus = conn.dining.menus
-    regx = re.compile("01-29",re.IGNORECASE)
+    regx = re.compile("bacon",re.IGNORECASE)
 
     #data = menus.find({'day': regx})
 
-    data = menus.find({'day':'2013-03-07 00:00:00', 'meal_type' : 'DN'}, {'_id': 0})
+    meal = 'Scrambled Egg'
+    data = menus.find({'day':'2013-03-02 00:00:00', 'menu' : regx}, {'_id': 0})
 
     for item in data:
         print item
