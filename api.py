@@ -41,7 +41,7 @@ def get_menus_on_day(date):
 
 """
 Searches the menus and returns the days which have the
-given meal
+given meal <food> is any food query to look for
 """
 @app.route("/menu/search/<food>", methods=['GET'])
 def search(food):
