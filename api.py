@@ -67,7 +67,8 @@ def search(food):
 Get Menu on given day and for given meal
 <date> is of format <MM><DD> with MM=month, <DD>=day
 
-Meal is one of {dinner | lunch | brunch}
+morning == {lunch | brunch}
+Meal is one of {dinner | lunch | brunch | morning}
 """
 @app.route("/menu/<date>/<meal>", methods=['GET'])
 def get_menu_for_meal(date, meal):
@@ -80,16 +81,22 @@ def get_menu_for_meal(date, meal):
 
 
     meal = str(meal).strip().lower()
+    meal_key = ''
     if meal == 'brunch':
-        meal = 'BN'
+        meal_key = 'BN'
     elif meal == 'lunch':
-        meal = 'LU'
+        meal_key= 'LU'
     elif meal == 'dinner':
-        meal = 'DN'
+        meal_key = 'DN'
+    elif meal == 'morning':
+        meal_key = '(LU|BN)'
     else:
         return error("invalid meal type. Must be one of {brunch, lunch, dinner}")
 
-    data = menus.find({'day': date_regex}, {'_id': 0})
+    meal_regex = re.compile(meal_key,re.IGNORECASE)
+    
+
+    data = menus.find({'day': date_regex, 'meal_type':meal_regex}, {'_id': 0})
 
 
     # Produce JSON
