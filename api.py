@@ -1,6 +1,7 @@
 __author__ = 'Jervis Muindi'
 
 from flask import Flask
+from flask import render_template
 from pymongo import MongoClient
 import json
 import re
@@ -17,6 +18,7 @@ def error(msg):
 
 def db_connect():
     return MongoClient('localhost', 27017)
+
 
 # Returns *all* menus on for a given date
 # Date is of the format <MM><DD> where MM=month
@@ -140,10 +142,9 @@ def test():
     test_search()
 
 
-
-@app.route("/")
-def hello():
-    return "Hello World2"
+@app.route("/", methods=['GET'])
+def home():
+    return render_template('index.html')
 
 if __name__ == "__main__":
     app.run()
