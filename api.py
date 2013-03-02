@@ -26,7 +26,7 @@ def db_connect():
 # Returns *all* menus on for a given date
 # Date is of the format <MM><DD> where MM=month
 # and DD=day. Year is assumed to be 2013
-@app.route("/menu/<date>", methods=['GET'])
+@app.route("/menu/<date>/", methods=['GET'])
 def get_menus_on_day(date):
     year = '2013'
     month = date[0:2]
@@ -41,7 +41,9 @@ def get_menus_on_day(date):
     my_list = []
     for item in data:
         my_list.append(item)
+    dict['size'] = data.count()
     dict['data'] = my_list
+
     return json.dumps(dict)
 
 """
@@ -70,7 +72,7 @@ Get Menu on given day and for given meal
 morning == {lunch | brunch}
 Meal is one of {dinner | lunch | brunch | morning}
 """
-@app.route("/menu/<date>/<meal>", methods=['GET'])
+@app.route("/menu/<date>/<meal>/", methods=['GET'])
 def get_menu_for_meal(date, meal):
     year = '2013'
     month = date[0:2]
@@ -109,6 +111,58 @@ def get_menu_for_meal(date, meal):
     return json.dumps(dict)
 
 
+"""
+Get Menu on given day and for given meal
+<date> is of format <MM><DD> with MM=month, <DD>=day
+
+Meal is one of {dinner | lunch | brunch | morning}
+morning == {lunch | brunch}
+
+Place is one of {ferris | johnjay}
+"""
+@app.route("/menu/<date>/<meal>/<place>/", methods=['GET'])
+def get_menu_for_meal_at_place(date, meal, place):
+    year = '2013'
+    month = date[0:2]
+    day = date[2:4]
+    menus = get_menu_collection()
+    full_date = "%s-%s-%s" % (year, month, day)
+    date_regex = re.compile(full_date,re.IGNORECASE)
+
+
+    meal = str(meal).strip().lower()
+    meal_key = ''
+    if meal == 'brunch':
+        meal_key = 'BN'
+    elif meal == 'lunch':
+        meal_key= 'LU'
+    elif meal == 'dinner':
+        meal_key = 'DN'
+    elif meal == 'morning':
+        meal_key = '(LU|BN)'
+    else:
+        return error("invalid meal type. Must be one of {brunch, lunch, dinner}")
+
+
+    if place == 'johnjay':
+        place = re.compile('Jay', re.IGNORECASE)
+    elif place == 'ferris':
+        place = re.compile('Fer', re.IGNORECASE)
+    else:
+        return error("Invalid location %s. Must be one of {ferris, johnjay}" %(place))
+
+    meal_regex = re.compile(meal_key,re.IGNORECASE)
+
+    data = menus.find({'day': date_regex, 'meal_type':meal_regex, 'place': place}, {'_id': 0})
+
+    # Produce JSON
+    dict = {'status_code' : 200}
+    my_list = []
+    for item in data:
+        my_list.append(item)
+    dict['size'] = data.count()
+    dict['data'] = my_list
+    return json.dumps(dict)
 
 # Retrieves the loaded data
 def show_data():
