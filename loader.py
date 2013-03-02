@@ -59,7 +59,7 @@ def hello():
 
 if __name__ == "__main__":
     if len(sys.argv) > 0:
-        if sys.argv[1] == 'show_data':
+        if sys.argv[0] == 'show_data':
             print 'Showing Loaded Data'
             show_data()
             exit(0)
