@@ -5,6 +5,9 @@ from flask import render_template
 from pymongo import MongoClient
 import json
 import re
+import datetime
+
+
 
 app = Flask(__name__)
 app.debug = True
@@ -144,7 +147,9 @@ def test():
 
 @app.route("/", methods=['GET'])
 def home():
-    return render_template('index.html')
+    now = datetime.datetime.now()
+    now =  now.strftime("%Y-%m-%d")
+    return render_template('index.html', now = now)
 
 if __name__ == "__main__":
     app.run()
