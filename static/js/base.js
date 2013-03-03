@@ -30,32 +30,29 @@ function build_menu_list(menu) {
     return result;
 }
 
-function build_menu_at_location(location) {
-    var template = '<h3> John Jay </h3> \
+function build_menu(morning_menu, dinner_menu, title) {
+    var template = '<h3> {2} </h3> \
         <hr/> \
         <div class="large-6 columns"> \
             <div> \
                 <h4>Morning (Brunch / Lunch)</h4> \
-                <div id="morning">%s </div> \
+                <div id="morning">{0} </div> \
             </div> \
         </div> \
         <div class="large-6 columns"> \
         <div> \
             <h4>Dinner</h4> \
-            <div id="dinner"> %s</div> \
+            <div id="dinner">{1}</div> \
         </div> \
         </div>';
 
 
-    morning_menu = get_morning_menu(location);
-    dinner_menu = get_dinner_menu(location);
-
-    return template.format(morning_menu, dinner_menu);
+    return template.format(morning_menu, dinner_menu, title);
 }
 
-function get_morning_menu(location) {
-    location = location.length > 0 ? location : "";
-    var api_url = "menu/" + CURRENT_TIME + "/morning/" + location;
+function get_menu_ajax(location, timeofday, callback) {
+    var location = location.length > 0 ? location : "";
+    var api_url = "menu/" + CURRENT_TIME + "/" + timeofday +"/" + location;
     $.ajax({
         url: api_url,
         beforeSend: function ( xhr ) {
@@ -63,19 +60,23 @@ function get_morning_menu(location) {
         }
     }).done(function ( data ) {
             var json = JSON.parse(data);
+            console.log('get menu async completed. doing callback ...' + data + ' | ' + api_url);
+            var html;
             $.each(json.data, function (i, result) {
-
-                var html = build_menu_list(result.menu);
+                html = build_menu_list(result.menu);
                 // Render it
                 //$('#morning').html(html);
-                return html;
+                //return html;
             });
-
+            callback(html);
         });
+    console.log('get menu async in progress');
 }
 
+
+
 function get_dinner_menu(location) {
-    location = location.length > 0 ? location : "";
+    var location = location.length > 0 ? location : "";
     var api_url = "menu/" + CURRENT_TIME + "/dinner/" + location;
     $.ajax({
         url: api_url,
@@ -93,6 +94,44 @@ function get_dinner_menu(location) {
     });
 }
 
+function load_page_ajax() {
+    // Load John Jay menu
+    console.log('start');
+    get_menu_ajax('johnjay', 'morning', function(html) {
+        var jj_morn = html;
+        get_menu_ajax('johnjay', 'dinner', function(html) {
+            var jj_dinner = html;
+            console.log('jj-morn is ' + jj_morn);
+            console.log('jj-dinner is ' + jj_dinner);
+            var jj_menu;
+            if (jj_dinner === undefined && jj_morn === undefined)  {
+                jj_dinner = jj_morn = 'Not Offered';
+            } else if (jj_dinner === undefined) {
+                jj_dinner = 'Not Offered';
+            } else if (jj_morn === undefined) {
+                jj_morn = 'Not Offered';
+            }
+            jj_menu = build_menu(jj_morn, jj_dinner, 'John Jay');
+
+            console.log('jjmnenu  is ' + jj_menu);
+            $('#johnjay').html(jj_menu);
+        });
+    });
+
+    console.log('done');
+
+    // Load Feris Menu
+    get_menu_ajax('ferris', 'morning', function(html) {
+       var fer_morn = html;
+        get_menu_ajax('ferris', 'dinner', function(html) {
+            var fer_dinner = html;
+            var fer_menu = build_menu(fer_morn, fer_dinner, 'Ferris Booth');
+            $('#ferris').html(fer_menu);
+        });
+    });
+}
+
 $(document).ready(function() {
-    alert('done wewe2');
+    load_page_ajax();
+    alert('done wewe5');
 });
