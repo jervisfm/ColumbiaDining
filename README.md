@@ -22,3 +22,7 @@ The following tools were used in building this:
 * Python Flask
 * PyMongo
 
+View it Live
+------------
+You can see this website deployed live at http://columbiadining.jmuindi.com
+
