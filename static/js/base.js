@@ -18,7 +18,7 @@ month = d.getMonth() + 1 + ''; // coerce to string
 day = day.length == 1 ? '0' + day : day;
 month = month.length == 1 ? '0' + month: month;
 var CURRENT_TIME = month + day;
-
+CURRENT_TIME = '0307';
 
 function build_menu_list(menu) {
     result = "<ul>";
