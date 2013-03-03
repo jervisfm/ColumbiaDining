@@ -138,5 +138,4 @@ function load_page_ajax() {
 
 $(document).ready(function() {
     load_page_ajax();
-    alert('done wewe5');
 });

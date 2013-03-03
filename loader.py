@@ -42,7 +42,7 @@ def load_data():
 def show_data():
     conn = db_connect()
     menus = conn.dining.menus
-    data = menus.find()    
+    data = menus.find()
     for item in data:
         print item
 
