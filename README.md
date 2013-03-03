@@ -1,4 +1,5 @@
-==Columbia Dining
+Columbia Dining
+==
 
 This is a simple project that aims to provide the current menu available for the dining facilities available at Columbia University. 
 
