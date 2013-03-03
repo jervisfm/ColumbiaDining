@@ -104,27 +104,32 @@ function load_page_ajax() {
             console.log('jj-morn is ' + jj_morn);
             console.log('jj-dinner is ' + jj_dinner);
             var jj_menu;
-            if (jj_dinner === undefined && jj_morn === undefined)  {
+            if (jj_dinner === undefined && jj_morn === undefined)  { // No meal(s) Offered.
                 jj_dinner = jj_morn = 'Not Offered';
-            } else if (jj_dinner === undefined) {
+            } else if (jj_dinner === undefined) { // No Dinner Offered
                 jj_dinner = 'Not Offered';
-            } else if (jj_morn === undefined) {
+            } else if (jj_morn === undefined) { // No Morning meal offered
                 jj_morn = 'Not Offered';
             }
             jj_menu = build_menu(jj_morn, jj_dinner, 'John Jay');
 
-            console.log('jjmnenu  is ' + jj_menu);
             $('#johnjay').html(jj_menu);
         });
     });
-
-    console.log('done');
 
     // Load Feris Menu
     get_menu_ajax('ferris', 'morning', function(html) {
        var fer_morn = html;
         get_menu_ajax('ferris', 'dinner', function(html) {
             var fer_dinner = html;
+            var fer_menu;
+            if (fer_dinner === undefined && fer_morn === undefined) { // No Meal offered
+                fer_dinner = fer_morn = 'Not Offered';
+            } else if (fer_dinner === undefined) { // No Dinner offered
+                fer_dinner = 'Not Offered';
+            } else if (fer_morn === undefined) { // No Morning Meal offered
+                fer_morn = 'Not Offered';
+            }
             var fer_menu = build_menu(fer_morn, fer_dinner, 'Ferris Booth');
             $('#ferris').html(fer_menu);
         });
