@@ -2,7 +2,6 @@ __author__ = 'Jervis Muindi'
 
 import json
 import sys
-import argparse
 from flask import Flask
 from pymongo import MongoClient
 
