@@ -209,7 +209,7 @@ def test():
 @app.route("/", methods=['GET'])
 def home():
     now = datetime.datetime.now()
-    now =  now.strftime("%Y-%m-%d")
+    now =  now.strftime("%A, %d %B  %Y")
     return render_template('index.html', now = now)
 
 if __name__ == "__main__":
